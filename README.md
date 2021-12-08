@@ -62,7 +62,27 @@ show bgp x.x.x.x/32
           rx pathid: 0, tx pathid: 0
       Refresh Epoch 1`
 ## 2. Создайте dummy0 интерфейс в Ubuntu. Добавьте несколько статических маршрутов. Проверьте таблицу маршрутизации.
+    `vagrant@vagrant:~$  sudo -i
+    root@vagrant:~# echo "dummy" >> /etc/modules
+    root@vagrant:~# echo "options dummy numdummies=2" > /etc/modprobe.d/dummy.conf
+    root@vagrant:~# vim /etc/network/interfaces
 
+    # interfaces(5) file used by ifup(8) and ifdown(8)
+    # Include files from /etc/network/interfaces.d:
+    source-directory /etc/network/interfaces.d
+    auto dummy0
+    iface dummy0 inet static
+        address 10.2.2.2/32
+        pre-up ip link add dummy0 type dummy
+        post-down ip link del dummy0`
+
+    `vagrant@vagrant:~$ ifenslave -a
+    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+        link/ether 08:00:27:73:60:cf brd ff:ff:ff:ff:ff:ff
+    3: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+        link/ether c6:16:a2:24:57:c6 brd ff:ff:ff:ff:ff:ff`
 ## 3. Проверьте открытые TCP порты в Ubuntu, какие протоколы и приложения используют эти порты? Приведите несколько примеров.
 
 ## 4. Проверьте используемые UDP сокеты в Ubuntu, какие протоколы и приложения используют эти порты?
