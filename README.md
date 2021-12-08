@@ -84,8 +84,59 @@ show bgp x.x.x.x/32
     3: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
         link/ether c6:16:a2:24:57:c6 brd ff:ff:ff:ff:ff:ff`
 ## 3. Проверьте открытые TCP порты в Ubuntu, какие протоколы и приложения используют эти порты? Приведите несколько примеров.
+    `vagrant@vagrant:~$ ss -lntp
+    State       Recv-Q      Send-Q            Local Address:Port             Peer Address:Port      Process
+    LISTEN      0           4096                    0.0.0.0:111                   0.0.0.0:*
+    LISTEN      0           4096              127.0.0.53%lo:53                    0.0.0.0:*
+    LISTEN      0           128                     0.0.0.0:22                    0.0.0.0:*
+    LISTEN      0           4096                       [::]:111                      [::]:*
+    LISTEN      0           128                        [::]:22                       [::]:*`
 
+Если не использовать параметр `-n` будет видно имя протокола:
+
+    `vagrant@vagrant:~$ ss -ltp
+    State       Recv-Q      Send-Q           Local Address:Port              Peer Address:Port      Process
+    LISTEN      0           4096                   0.0.0.0:sunrpc                 0.0.0.0:*
+    LISTEN      0           4096             127.0.0.53%lo:domain                 0.0.0.0:*
+    LISTEN      0           128                    0.0.0.0:ssh                    0.0.0.0:*
+    LISTEN      0           4096                      [::]:sunrpc                    [::]:*
+    LISTEN      0           128                       [::]:ssh                       [::]:*`
+
+Просмотр приложений, использующих порты:
+
+    `vagrant@vagrant:~$ sudo netstat -pnlt
+    Active Internet connections (only servers)
+    Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+    tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      1/init
+    tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      557/systemd-resolve
+    tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      682/sshd: /usr/sbin
+    tcp6       0      0 :::111                  :::*                    LISTEN      1/init
+    tcp6       0      0 :::22                   :::*                    LISTEN      682/sshd: /usr/sbin`
 ## 4. Проверьте используемые UDP сокеты в Ubuntu, какие протоколы и приложения используют эти порты?
+    `vagrant@vagrant:~$ ss -lnup
+    State       Recv-Q      Send-Q            Local Address:Port             Peer Address:Port      Process
+    UNCONN      0           0                 127.0.0.53%lo:53                    0.0.0.0:*
+    UNCONN      0           0                10.0.2.15%eth0:68                    0.0.0.0:*
+    UNCONN      0           0                       0.0.0.0:111                   0.0.0.0:*
+    UNCONN      0           0                          [::]:111                      [::]:*`
 
+Также без опции `-n` будет видно имя протокол.
+
+    `vagrant@vagrant:~$ ss -lup
+    State       Recv-Q      Send-Q            Local Address:Port             Peer Address:Port      Process
+    UNCONN      0           0                 127.0.0.53%lo:domain                0.0.0.0:*
+    UNCONN      0           0                10.0.2.15%eth0:bootpc                0.0.0.0:*
+    UNCONN      0           0                       0.0.0.0:sunrpc                0.0.0.0:*
+    UNCONN      0           0                          [::]:sunrpc                   [::]:*`
+
+Просмотр приложений, использующих порты:
+
+    `vagrant@vagrant:~$ sudo netstat -pnlu
+    Active Internet connections (only servers)
+    Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+    udp        0      0 127.0.0.53:53           0.0.0.0:*                           557/systemd-resolve
+    udp        0      0 10.0.2.15:68            0.0.0.0:*                           387/systemd-network
+    udp        0      0 0.0.0.0:111             0.0.0.0:*                           1/init
+    udp6       0      0 :::111                  :::*                                1/init`
 ## 5. Используя diagrams.net, создайте L3 диаграмму вашей домашней сети или любой другой сети, с которой вы работали. 
 ![Untitled Diagram](https://user-images.githubusercontent.com/92984527/145182757-5280b09c-caf7-4913-b77c-cf2c703ee1e5.jpg)
