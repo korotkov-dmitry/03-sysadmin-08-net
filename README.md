@@ -83,6 +83,16 @@ show bgp x.x.x.x/32
         link/ether 08:00:27:73:60:cf brd ff:ff:ff:ff:ff:ff
     3: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
         link/ether c6:16:a2:24:57:c6 brd ff:ff:ff:ff:ff:ff`
+        
+Добавление маршрута:
+
+    `vagrant@vagrant:~$ sudo ip route add 192.168.2.0/24 dev dummy0
+    vagrant@vagrant:~$ sudo ip route
+    default via 10.0.2.2 dev eth0 proto dhcp src 10.0.2.15 metric 100
+    10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15
+    10.0.2.2 dev eth0 proto dhcp scope link src 10.0.2.15 metric 100
+    192.168.2.0/24 dev dummy0 scope link`
+    
 ## 3. Проверьте открытые TCP порты в Ubuntu, какие протоколы и приложения используют эти порты? Приведите несколько примеров.
     `vagrant@vagrant:~$ ss -lntp
     State       Recv-Q      Send-Q            Local Address:Port             Peer Address:Port      Process
